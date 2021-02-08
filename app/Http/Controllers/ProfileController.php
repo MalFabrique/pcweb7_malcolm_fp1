@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Profile;
 use App\Models\Post;
-
-
+use App\Models\User;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 
 class ProfileController extends Controller
@@ -16,9 +16,14 @@ class ProfileController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $profile = Profile::where('user_id', $user->id)->first();
+        $user_id = $user->id;
+        //$profile = Profile::where('user_id', $user->id)->first();
+        $profile = Profile::find($user_id);
         $posts = \App\Models\Post::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
-        $postscount = \App\Models\Post::where('user_id', $user->id)->count();
+        
+        //$postscount = \App\Models\Post::where('user_id', $user->id)->count();
+
+        $postscount = count($posts);
 
         return view('profile', [
             'user' => $user,
@@ -100,5 +105,23 @@ class ProfileController extends Controller
         $profile = Profile::where('user_id', $user->id)->first();
     }
 
+    public function user_profile($id){
+        
+
+        $user_id =$id; 
+        $user =\App\Models\User::find($user_id);
+
+
+        $profile = Profile::find($user_id);
+        $posts = \App\Models\Post::where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
+        $postscount = \App\Models\Post::where('user_id', $user_id)->count();
+
+        return view('profile', [
+            'user' => $user,
+            'profile' => $profile,
+            'posts' => $posts,
+            'postscount' => $postscount
+        ]);
+    }
     
 }

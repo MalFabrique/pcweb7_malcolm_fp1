@@ -18,11 +18,18 @@ class MyFamilyController extends Controller
     {
         //
         $user = Auth::user();
-        $profile = Profile::where('user_id', $user->id)->first();
+        $user_id = $user->id;
+        //$profile = Profile::where('user_id', $user->id)->first();
+        $profile = Profile::find($user_id);
         $posts = \App\Models\Post::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
         $postscount = \App\Models\Post::where('user_id', $user->id)->count();
 
-        return view('myFamily');
+        //get all users
+        $users = \App\Models\User::all();
+
+        //return view('myFamily');
+
+        return view('myFamily')->with('users', $users)->with('profile', $profile);
 
         // return view('profile', [
         //     'user' => $user,
